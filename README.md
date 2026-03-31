@@ -146,10 +146,6 @@ bbtag/
 └── pyproject.toml
 ```
 
-## 协议文档
-
-详见 [docs/PROTOCOL.md](docs/PROTOCOL.md)
-
 ## License
 
 MIT
