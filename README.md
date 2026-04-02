@@ -157,7 +157,3 @@ bbtag/
 │   └── push_kimi_usage_3.7.py    #   Kimi usage -> 3.7 寸
 └── pyproject.toml
 ```
-
-## License
-
-MIT
