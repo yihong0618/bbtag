@@ -64,6 +64,10 @@ uv run examples/push_kimi_usage.py
 # 把 Kimi Code usage 画成 /stats 风格并推到 3.7 寸
 uv run examples/push_kimi_usage_3.7.py
 
+# 把 macOS 当天 App 使用时长榜单推到 3.7 寸
+# 需要给终端 Full Disk Access 才能读取 Knowledge 数据库
+uv run examples/push_macos_app_usage_3.7.py --preview-only
+
 # 仅生成 Kimi usage 预览图
 uv run examples/push_kimi_usage.py --preview-only
 
@@ -154,6 +158,7 @@ bbtag/
 │   ├── push_codex_usage.py       #   Codex usage -> 2.13 寸
 │   ├── push_codex_usage_3.7.py   #   Codex usage -> 3.7 寸
 │   ├── push_kimi_usage.py        #   Kimi usage -> 2.13 寸
-│   └── push_kimi_usage_3.7.py    #   Kimi usage -> 3.7 寸
+│   ├── push_kimi_usage_3.7.py    #   Kimi usage -> 3.7 寸
+│   └── push_macos_app_usage_3.7.py # macOS app usage -> 3.7 寸
 └── pyproject.toml
 ```
