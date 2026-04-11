@@ -364,7 +364,7 @@ async def push_image_to_small_screen(image: Image.Image, args) -> bool:
 
     target = await _find_target(args, profile)
     if not target:
-        print("❌ 未找到设备")
+        print("未找到设备")
         return False
 
     session = await connect_session(
@@ -373,7 +373,7 @@ async def push_image_to_small_screen(image: Image.Image, args) -> bool:
         connect_retries=DEFAULT_CONNECT_RETRIES,
     )
     if not session:
-        print("❌ 连接设备失败")
+        print("连接设备失败")
         return False
 
     try:
@@ -391,10 +391,13 @@ async def push_image_to_small_screen(image: Image.Image, args) -> bool:
             on_progress=_layer_progress,
         )
         if not ok:
-            print("❌ 发送失败")
+            print("发送失败")
         return ok
     finally:
-        await session.close()
+        try:
+            await session.close()
+        except Exception as e:
+            print(f"关闭连接时出错: {e}")
 
 
 _last_interrupt_time = 0.0
@@ -424,8 +427,8 @@ async def run_loop(args, profile) -> int:
             else:
                 rows = fetch_crypto_prices()
         except CryptoPriceError as exc:
-            print(f"  ⚠️ 获取失败: {exc}")
-            print(f"  1 秒后重试...")
+            print(f" 获取失败: {exc}")
+            print(f" 1 秒后重试...")
             await asyncio.sleep(1)
             continue
 
@@ -445,7 +448,7 @@ async def run_loop(args, profile) -> int:
         else:
             ok = await push_image_to_small_screen(image, args)
             if not ok:
-                print(f"  ⚠️ 推送失败，{args.interval_sec} 秒后重试...")
+                print(f" 推送失败，{args.interval_sec} 秒后重试...")
                 await asyncio.sleep(args.interval_sec)
                 continue
 
@@ -469,7 +472,7 @@ def main() -> int:
     profile = get_screen_profile(args.screen)
     if profile.name != "2.13inch":
         print(
-            "❌ 当前脚本只为 2.13 寸布局设计，请使用 --screen 2.13inch",
+            "当前脚本只为2.13寸布局设计，请使用 --screen 2.13inch",
             file=sys.stderr,
         )
         return 2
@@ -479,7 +482,7 @@ def main() -> int:
         result = asyncio.run(run_loop(args, profile))
         return result
     except KeyboardInterrupt:
-        print("\n👋 已退出")
+        print("\n 已退出")
         return 0
     except CryptoPriceError as exc:
         print(f"error: {exc}", file=sys.stderr)
