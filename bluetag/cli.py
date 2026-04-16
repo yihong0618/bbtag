@@ -312,7 +312,7 @@ def cmd_decode(args):
     """从 btsnoop HCI 日志解码图像 (调试用)"""
     import subprocess
 
-    import lzo
+    import lzokay
 
     result = subprocess.run(
         [
@@ -354,7 +354,7 @@ def cmd_decode(args):
     l1_block = payload[30 : 30 + s1]
 
     l1_full = bytes([l1_method]) + bytes(l1_block[: l1_lzo_size - 1])
-    l1_dec = lzo.decompress(l1_full, False, 20480)
+    l1_dec = lzokay.decompress(l1_full, 20480)
 
     l1_remaining = l1_block[l1_lzo_size - 1 :]
     if l1_remaining[0] == 0x00:
@@ -370,7 +370,7 @@ def cmd_decode(args):
     l2_block = payload[30 + s1 : 30 + s1 + s2]
     l2_lzo_data = l2_block[: l2_full_size - 1]
     l2_full = bytes([l2_method]) + bytes(l2_lzo_data)
-    l2_dec = lzo.decompress(l2_full, False, 4480)
+    l2_dec = lzokay.decompress(l2_full, 4480)
 
     full_2bpp = l1_dec + l2_dec
     indices = unpack_2bpp(full_2bpp)

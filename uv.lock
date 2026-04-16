@@ -79,10 +79,10 @@ version = "1.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "bleak" },
+    { name = "lzokay" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.4.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.11'" },
     { name = "pillow" },
-    { name = "python-lzo" },
     { name = "tomli" },
 ]
 
@@ -107,13 +107,13 @@ requires-dist = [
     { name = "bleak", specifier = ">=0.21.0" },
     { name = "fastapi", marker = "extra == 'all'", specifier = ">=0.110.0" },
     { name = "fastapi", marker = "extra == 'server'", specifier = ">=0.110.0" },
+    { name = "lzokay", specifier = ">=2.1.0" },
     { name = "numpy", specifier = ">=1.24.0" },
     { name = "pillow", specifier = ">=10.0.0" },
     { name = "pydantic-settings", marker = "extra == 'all'", specifier = ">=2.2.0" },
     { name = "pydantic-settings", marker = "extra == 'server'", specifier = ">=2.2.0" },
     { name = "python-dotenv", marker = "extra == 'all'", specifier = ">=1.0.0" },
     { name = "python-dotenv", marker = "extra == 'server'", specifier = ">=1.0.0" },
-    { name = "python-lzo", specifier = ">=1.14" },
     { name = "python-multipart", marker = "extra == 'all'", specifier = ">=0.0.9" },
     { name = "python-multipart", marker = "extra == 'server'", specifier = ">=0.0.9" },
     { name = "tomli", specifier = ">=2.4.1" },
@@ -211,6 +211,40 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/6f/6d/0703ccc57f3a7233505399edb88de3cbd678da106337b9fcde432b65ed60/idna-3.11.tar.gz", hash = "sha256:795dafcc9c04ed0c1fb032c2aa73654d8e8c5023a7df64a53f39190ada629902", size = 194582, upload-time = "2025-10-12T14:55:20.501Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0e/61/66938bbb5fc52dbdf84594873d5b51fb1f7c7794e9c0f5bd885f30bc507b/idna-3.11-py3-none-any.whl", hash = "sha256:771a87f49d9defaf64091e6e6fe9c18d4833f140bd19464795bc32d966ca37ea", size = 71008, upload-time = "2025-10-12T14:55:18.883Z" },
+]
+
+[[package]]
+name = "lzokay"
+version = "2.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/0f/17/35e21123ed48eecb87a068325f49bc9617ce9f065c9e69325b064208f464/lzokay-2.1.0.tar.gz", hash = "sha256:5796a1f784b00a6b445315c1acbc4ad7a922b0eec07f3d697b4f6c60c5da853b", size = 22579, upload-time = "2025-10-17T22:11:38.39Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/57/29/a3ce478239081f956959422c3f1acc05596f6f0b2fa7ac25d0c5fc128486/lzokay-2.1.0-cp310-abi3-macosx_10_12_x86_64.whl", hash = "sha256:354be3a13de4a4d1b5055d7987ee3abfc2c7771c4bd0bc1cccd5e9bd7eab824e", size = 217069, upload-time = "2025-10-17T22:11:21.971Z" },
+    { url = "https://files.pythonhosted.org/packages/69/c9/90b8b2430761eb503b6fe2e7851b3d4e010ddc038c123292509a7a796104/lzokay-2.1.0-cp310-abi3-macosx_11_0_arm64.whl", hash = "sha256:4daf4f9e266257cc33e43aca5419e6baea0edb44371dde064a8423f0332f705a", size = 210066, upload-time = "2025-10-17T22:11:18.675Z" },
+    { url = "https://files.pythonhosted.org/packages/da/62/a329ce5f1c4c0cc64768b42d693b945e9646456f2d6cfa516347646add82/lzokay-2.1.0-cp310-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:8797a58ed8b70e7556eab747105abbfae41716824eec7038f2e3a10d99ae276e", size = 210183, upload-time = "2025-10-17T22:11:04.838Z" },
+    { url = "https://files.pythonhosted.org/packages/30/aa/b5bb72ed1e8fe12c460cfb870f700e76f0d8699eb06a7e5ca996f0fc5530/lzokay-2.1.0-cp310-abi3-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:34d0635cd0bb918f27abec86b43dbff03d3f04082c729b3cb2ec481c6bc5551f", size = 205994, upload-time = "2025-10-17T22:11:08.658Z" },
+    { url = "https://files.pythonhosted.org/packages/96/8f/55550a952b6558cf23c382380f56822962d97b60cc0250e6b91321f81692/lzokay-2.1.0-cp310-abi3-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:5b35f888418fdd7d85ec8ae6e457a1d5f4a3f81782ebb1ebf66d664171425ca8", size = 242753, upload-time = "2025-10-17T22:11:11.875Z" },
+    { url = "https://files.pythonhosted.org/packages/31/3d/4a074523976bf7f56033a04c47fc9319834592e470c8a95c3fac587b8976/lzokay-2.1.0-cp310-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6aa14b39ea6d80159a25de0f337b85cd59413a1e42c9ba34e18216202099ab8a", size = 220349, upload-time = "2025-10-17T22:11:15.299Z" },
+    { url = "https://files.pythonhosted.org/packages/d7/b3/a62634b53acde4f408c0d3111ec27160ff8887ab1164f9b20aa3e44aed17/lzokay-2.1.0-cp310-abi3-musllinux_1_2_aarch64.whl", hash = "sha256:5509589d8f12d4e9efcf5aa90239c701459b122ee2c788533c693c415ea4f55b", size = 209015, upload-time = "2025-10-17T22:11:25.479Z" },
+    { url = "https://files.pythonhosted.org/packages/d2/61/8fda2f1984dbb3ef8d570a373bdbb2be1e5f920186dbf00259f421023e35/lzokay-2.1.0-cp310-abi3-musllinux_1_2_armv7l.whl", hash = "sha256:fa2a5abd954c09db1173f69eda8914c650c085179f5f0684ab3faf64d9f39483", size = 204614, upload-time = "2025-10-17T22:11:28.837Z" },
+    { url = "https://files.pythonhosted.org/packages/6d/82/14f335737afd5c48230a1c7038af8eb60286071670441c9f8af4a8ee1be2/lzokay-2.1.0-cp310-abi3-musllinux_1_2_i686.whl", hash = "sha256:c87c9fa436368853c86204c3155ff76ae68328a627a70c602713d7e6ec9ee846", size = 237573, upload-time = "2025-10-17T22:11:31.809Z" },
+    { url = "https://files.pythonhosted.org/packages/aa/f7/5bcce1e73dda9a6f2b24815a2891ee201f7d946f8ee70939f234592aa368/lzokay-2.1.0-cp310-abi3-musllinux_1_2_x86_64.whl", hash = "sha256:ff1619f66f0116b3142063decec955a6578f62518ae9050cd393986f4c14b73d", size = 218935, upload-time = "2025-10-17T22:11:34.965Z" },
+    { url = "https://files.pythonhosted.org/packages/b3/78/4fff6075cbaa1a0ea1f6d45fc08065a890876c80eb5bcf9a5c7fb7ed3648/lzokay-2.1.0-cp310-abi3-win32.whl", hash = "sha256:5577ee05b33bbce28572a44c939ebeba67908cf5fc7f2c45c367130047e5a77b", size = 103628, upload-time = "2025-10-17T22:11:42.255Z" },
+    { url = "https://files.pythonhosted.org/packages/bc/31/ece630fc0567c2c24802434eb6fb3f507e8a8b3bb6c9450aa751ade99a89/lzokay-2.1.0-cp310-abi3-win_amd64.whl", hash = "sha256:928f33f3ff238f9326006a418100a32394847edfb664442e433025f919c4e2f7", size = 107659, upload-time = "2025-10-17T22:11:46.003Z" },
+    { url = "https://files.pythonhosted.org/packages/f3/80/c734f80cb5f8feebcfc493b031ba7ae7dcaef7aa22759682cbca20824444/lzokay-2.1.0-cp310-abi3-win_arm64.whl", hash = "sha256:32ec987a183ee82ea66902162784db2d0f4f184c3e72b8159d7a8f0c333de8b7", size = 106303, upload-time = "2025-10-17T22:11:39.073Z" },
+    { url = "https://files.pythonhosted.org/packages/5a/a3/2d57a3b86433c639223cffb603e75fbcd69afc2dff2b7f06bf340f9345d7/lzokay-2.1.0-cp313-cp313t-macosx_10_12_x86_64.whl", hash = "sha256:7ebeb25e35aeeb9fe0526771409d0407936676c9b0e0de0185f12d9d8ade3ed7", size = 215064, upload-time = "2025-10-17T22:11:23.247Z" },
+    { url = "https://files.pythonhosted.org/packages/ac/52/a77b5d690e85a00b6b0bb46acd661218c86baac0cfc4ab1baa4df3995889/lzokay-2.1.0-cp313-cp313t-macosx_11_0_arm64.whl", hash = "sha256:62e1e3b4aca0b90bffeff31d72dcb6b1bb727c1ba67f5004642ffe45ebb88ac7", size = 208144, upload-time = "2025-10-17T22:11:19.754Z" },
+    { url = "https://files.pythonhosted.org/packages/d1/0c/63e5e86487c5775d6932b1c94e7af66aa915d99489bddfd3683bdd917e64/lzokay-2.1.0-cp313-cp313t-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:0e13c8df77b2ac87ebccf6167c856840a24165c40ee8230a3d556e2f404b8d5a", size = 209487, upload-time = "2025-10-17T22:11:06.003Z" },
+    { url = "https://files.pythonhosted.org/packages/4a/ea/c169c71cc9ec9c48fdcbe92d4eacded5cc171242be7ad5075c6575d8addb/lzokay-2.1.0-cp313-cp313t-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "sha256:6ba9ceb4715c8550bf6e91a58ca29f4161fa396820f424a7080842206901901d", size = 205538, upload-time = "2025-10-17T22:11:09.677Z" },
+    { url = "https://files.pythonhosted.org/packages/4e/2b/f0d7c3c1cb5247df41d0c90c42cff2e8dcece2291b7fbe250d825218c2f8/lzokay-2.1.0-cp313-cp313t-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:4e6d7984450b1575815f822b3d0b834063d60e33c6b5a57081571d0f96b86ebc", size = 241614, upload-time = "2025-10-17T22:11:13.061Z" },
+    { url = "https://files.pythonhosted.org/packages/09/67/87630d466e7785443cf8bc1a4838d4c556fc3c12a87e885c39f32ba06587/lzokay-2.1.0-cp313-cp313t-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:41a4cd5a20a81cf8e27ae1883a9eced4ad1bfe694fad54b67117434100fc45db", size = 219000, upload-time = "2025-10-17T22:11:16.574Z" },
+    { url = "https://files.pythonhosted.org/packages/31/9f/785221032e96ca15dc1227b9955bb715ea7ef72fa93ad5bb5d1e96c89255/lzokay-2.1.0-cp313-cp313t-musllinux_1_2_aarch64.whl", hash = "sha256:3c21198d8736905ce4d9417c64e1f62ac3d0c2b9a5efb8e457144c8dd43e20b1", size = 208301, upload-time = "2025-10-17T22:11:26.479Z" },
+    { url = "https://files.pythonhosted.org/packages/34/0c/64c0a9b102b56f57a1a72647694ef2ad44d861f2f2d0f73b406f5e9a5819/lzokay-2.1.0-cp313-cp313t-musllinux_1_2_armv7l.whl", hash = "sha256:dfabbc0d33bc6ffa226fbc6fed51fdae5478de40caabd3e315334cd51e4c1a7b", size = 204191, upload-time = "2025-10-17T22:11:29.827Z" },
+    { url = "https://files.pythonhosted.org/packages/fa/01/0374b852a0fb2881aee8c2d01d97b659e9af7062bdb8dc15246d9a6a4e18/lzokay-2.1.0-cp313-cp313t-musllinux_1_2_i686.whl", hash = "sha256:99a32c751621b69ab973987c2d8cef3bb4a7db1a970856b336fe54b0a8e8eafd", size = 235977, upload-time = "2025-10-17T22:11:32.914Z" },
+    { url = "https://files.pythonhosted.org/packages/34/23/b7d59a529449141f718931d5863e21cf51a2893594492db70a8f61d6dbae/lzokay-2.1.0-cp313-cp313t-musllinux_1_2_x86_64.whl", hash = "sha256:448341994a3010c5ad315c117a82f8d718c3a6206a63f53099179c199dabccda", size = 217717, upload-time = "2025-10-17T22:11:36.116Z" },
+    { url = "https://files.pythonhosted.org/packages/27/b9/45079564e9521c741fcf9a55a95b392f156140448510f1824cf73252bbbf/lzokay-2.1.0-cp313-cp313t-win32.whl", hash = "sha256:6816c077a9782fad4833f6f913234ef5761c45287afad05cc58edef4e9003c34", size = 103345, upload-time = "2025-10-17T22:11:43.42Z" },
+    { url = "https://files.pythonhosted.org/packages/59/a6/a235a2fe6942f1daddad2906604a250503be48c9458164a5c3d58f13e07c/lzokay-2.1.0-cp313-cp313t-win_amd64.whl", hash = "sha256:414f847f719408de51551857afa179146d9db30e76712caa89b5dac2e1f68e5e", size = 107585, upload-time = "2025-10-17T22:11:46.959Z" },
+    { url = "https://files.pythonhosted.org/packages/89/22/8e81927727d722fe09738145cbac49ac5ad085910f7ca3c92f2f093ae701/lzokay-2.1.0-cp313-cp313t-win_arm64.whl", hash = "sha256:17f8bbc43bb95eabfbdc150fe517037954e172b78768dbac2e2054c63355eac1", size = 105502, upload-time = "2025-10-17T22:11:39.963Z" },
 ]
 
 [[package]]
@@ -601,16 +635,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/82/ed/0301aeeac3e5353ef3d94b6ec08bbcabd04a72018415dcb29e588514bba8/python_dotenv-1.2.2.tar.gz", hash = "sha256:2c371a91fbd7ba082c2c1dc1f8bf89ca22564a087c2c287cd9b662adde799cf3", size = 50135, upload-time = "2026-03-01T16:00:26.196Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0b/d7/1959b9648791274998a9c3526f6d0ec8fd2233e4d4acce81bbae76b44b2a/python_dotenv-1.2.2-py3-none-any.whl", hash = "sha256:1d8214789a24de455a8b8bd8ae6fe3c6b69a5e3d64aa8a8e5d68e694bbcb285a", size = 22101, upload-time = "2026-03-01T16:00:25.09Z" },
-]
-
-[[package]]
-name = "python-lzo"
-version = "1.15"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/a4/8f/60cbc1a57257cd21c9e35217a8bc8713424dc7502df17794d914738df50f/python-lzo-1.15.tar.gz", hash = "sha256:a57aaa00c5c3a0515dd9f7426ba2cf601767dc19dc023d8b99d4a13b0a327b49", size = 17633, upload-time = "2023-05-22T06:53:06.11Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/8c/4c/c31aab61372115267ca8f0a36554808de8f5edaaac37a7f3c469af664ede/python_lzo-1.15-cp310-cp310-win_amd64.whl", hash = "sha256:6224b4362580b3e797fa12ccfb56da22d0a8faac3d900dd0eafcc881ed98eb29", size = 40037, upload-time = "2023-05-22T06:52:36.415Z" },
-    { url = "https://files.pythonhosted.org/packages/85/13/be679f0243c67646b5dc64bb167a3ae9aa625aa8f881701c13e2dd2251c5/python_lzo-1.15-cp311-cp311-win_amd64.whl", hash = "sha256:6b00d32d53928514a3954385583c0d06850259fe8c54039260d0dbc0842a9d9e", size = 40036, upload-time = "2023-05-22T06:52:38.56Z" },
 ]
 
 [[package]]

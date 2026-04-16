@@ -6,7 +6,7 @@
 """
 
 import struct
-import lzo
+import lzokay
 
 from bluetag.image import BPP2_SIZE
 
@@ -17,7 +17,7 @@ MAX_PAYLOAD = 160  # 每个 BLE 包最大 payload
 
 def _lzo_compress(data: bytes) -> bytes:
     """LZO1X-1 压缩 (raw, 无 header)"""
-    return lzo.compress(data, 1, False)
+    return lzokay.compress(data)
 
 
 def build_frame(mac_suffix: bytes, image_data_2bpp: bytes) -> bytes:

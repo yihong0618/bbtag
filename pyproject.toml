@@ -13,7 +13,7 @@ license = {text = "MIT"}
 dependencies = [
     "Pillow>=10.0.0",
     "numpy>=1.24.0",
-    "python-lzo>=1.14",
+    "lzokay>=2.1.0",
     "bleak>=0.21.0",
     "tomli>=2.4.1",
 ]

@@ -12,22 +12,10 @@ CLI 会按 `--screen` 自动切换发送协议，并分别缓存到 `.device.3.7
 ## 快速开始
 
 ```bash
-# 系统依赖
-# macOS: brew install lzo
-# Linux: sudo apt install liblzo2-dev
-
 # 安装
 git clone <your-repo-url> && cd bbtag
-
-# macOS (Homebrew): python-lzo 需要显式指向 Homebrew 的 lzo 头文件
-LZO_DIR="$(brew --prefix lzo)" uv sync
-
-# Linux
 uv sync
 ```
-
-如果 macOS 上看到 `fatal error: 'lzo/lzo1.h' file not found`，说明 `python-lzo`
-没有找到 Homebrew 的 `lzo` 头文件；使用上面的 `LZO_DIR=... uv sync` 即可。
 
 需要蓝牙适配器 (USB dongle 或内置蓝牙)。
 
