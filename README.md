@@ -127,6 +127,18 @@ async def push_text():
 asyncio.run(push_image())
 ```
 
+## Web UI
+
+可选的本地 Web 界面，覆盖扫描设备 / 推送文字 / 上传图片 / 预览。默认关闭，设 `BLUETAG_SERVE_WEB=1` 启用。
+
+```bash
+uv sync --extra server
+BLUETAG_API_TOKEN=your-secret BLUETAG_SERVE_WEB=1 \
+  uv run uvicorn bluetag.server:app --port 8090
+```
+
+浏览器打开 <http://127.0.0.1:8090/> 即可使用，token 填到右上角输入框。完整 REST 文档见 <http://127.0.0.1:8090/docs>。
+
 ## 项目结构
 
 ```
@@ -138,7 +150,8 @@ bbtag/
 │   ├── ble.py            #   BLE 扫描/连接/发送 (bleak)
 │   ├── screens.py        #   屏幕配置、设备名前缀、缓存文件规则
 │   ├── transfer.py       #   2.13 寸图层发送协议
-│   ├── server.py         #   REST API 服务 (FastAPI)
+│   ├── server.py         #   REST API 服务 (FastAPI) + Web UI 静态托管
+│   ├── web/              #   Web UI 静态资源 (index.html / app.js / styles.css)
 │   └── cli.py            #   命令行工具
 ├── examples/                     # 示例脚本
 │   ├── push_image.py             #   推送图片示例
@@ -147,6 +160,7 @@ bbtag/
 │   ├── push_codex_usage_3.7.py   #   Codex usage -> 3.7 寸
 │   ├── push_kimi_usage.py        #   Kimi usage -> 2.13 寸
 │   ├── push_kimi_usage_3.7.py    #   Kimi usage -> 3.7 寸
-│   └── push_macos_app_usage_3.7.py # macOS app usage -> 3.7 寸
+│   ├── push_macos_app_usage_3.7.py # macOS app usage -> 3.7 寸
+│   └── push_crypto_binance_price.py # 币价 -> 2.13 寸
 └── pyproject.toml
 ```
