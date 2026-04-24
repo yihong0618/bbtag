@@ -131,13 +131,26 @@ asyncio.run(push_image())
 
 可选的本地 Web 界面，覆盖扫描设备 / 推送文字 / 上传图片 / 预览。默认关闭，设 `BLUETAG_SERVE_WEB=1` 启用。
 
+安装依赖：
+
 ```bash
 uv sync --extra server
-BLUETAG_API_TOKEN=your-secret BLUETAG_SERVE_WEB=1 \
-  uv run uvicorn bluetag.server:app --port 8090
 ```
 
-浏览器打开 <http://127.0.0.1:8090/> 即可使用，token 填到右上角输入框。完整 REST 文档见 <http://127.0.0.1:8090/docs>。
+配置环境变量（写入项目根目录的 `.env`）：
+
+```
+BLUETAG_API_TOKEN=your-secret
+BLUETAG_SERVE_WEB=1
+```
+
+启动服务和 Web UI：
+
+```bash
+uv run uvicorn bluetag.server:app --port 8090
+```
+
+浏览器打开 <http://127.0.0.1:8090/>，token 填到右上角输入框。完整 REST 文档见 <http://127.0.0.1:8090/docs>。
 
 ## 项目结构
 
