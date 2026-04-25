@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="bluetag-api" content="" />
+  <title>BluETag</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://unpkg.com/alpinejs@3.14.1/dist/cdn.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+  <div x-data="bluetag()" x-init="init()" class="max-w-5xl mx-auto p-4 md:p-8">
+
+    <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-6">
+      <div class="flex items-center gap-3">
+        <h1 class="text-2xl font-semibold tracking-tight">BluETag</h1>
+        <span class="text-xs text-slate-500" x-text="'v' + version"></span>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <select x-model="screen" @change="loadDevices()" class="border rounded px-2 py-1.5 text-sm bg-white">
+          <template x-for="s in screens" :key="s.name">
+            <option :value="s.name" x-text="s.label"></option>
+          </template>
+        </select>
+        <button @click="scanDevices()" :disabled="scanning"
+          class="px-3 py-1.5 text-sm rounded bg-slate-900 text-white disabled:opacity-50">
+          <span x-show="!scanning">扫描</span>
+          <span x-show="scanning">扫描中…</span>
+        </button>
+        <input type="password" x-model="token" @change="saveToken()" placeholder="API Token"
+          class="border rounded px-2 py-1.5 text-sm w-40 bg-white" />
+      </div>
+    </header>
+
+    <nav class="flex gap-1 border-b border-slate-200 mb-4">
+      <template x-for="t in tabs" :key="t.id">
+        <button @click="tab = t.id"
+          :class="tab === t.id ? 'border-slate-900 text-slate-900' : 'border-transparent text-slate-500'"
+          class="px-4 py-2 text-sm border-b-2 -mb-px hover:text-slate-900">
+          <span x-text="t.label"></span>
+        </button>
+      </template>
+    </nav>
+
+    <!-- Devices tab -->
+    <section x-show="tab === 'devices'" x-cloak>
+      <div class="bg-white rounded-lg border border-slate-200 overflow-hidden">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50 text-slate-500 text-xs uppercase">
+            <tr>
+              <th class="text-left px-3 py-2">名称</th>
+              <th class="text-left px-3 py-2">地址</th>
+              <th class="text-left px-3 py-2">RSSI</th>
+              <th class="text-left px-3 py-2">状态</th>
+              <th class="text-left px-3 py-2"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <template x-for="d in devices" :key="d.address">
+              <tr class="border-t border-slate-100">
+                <td class="px-3 py-2 font-mono" x-text="d.name"></td>
+                <td class="px-3 py-2 font-mono text-slate-500" x-text="d.address"></td>
+                <td class="px-3 py-2" x-text="d.rssi"></td>
+                <td class="px-3 py-2">
+                  <span :class="d.online ? 'text-emerald-600' : 'text-slate-400'"
+                    x-text="d.online ? '在线' : '离线'"></span>
+                </td>
+                <td class="px-3 py-2 text-right">
+                  <button @click="defaultDevice = d.name"
+                    :class="defaultDevice === d.name ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-700'"
+                    class="text-xs px-2 py-1 rounded">
+                    <span x-text="defaultDevice === d.name ? '默认 ✓' : '设为默认'"></span>
+                  </button>
+                </td>
+              </tr>
+            </template>
+            <tr x-show="!devices.length">
+              <td colspan="5" class="px-3 py-6 text-center text-slate-400">
+                暂无缓存设备，点右上角「扫描」试试
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Text tab -->
+    <section x-show="tab === 'text'" x-cloak class="grid md:grid-cols-2 gap-6">
+      <div class="space-y-3">
+        <div>
+          <label class="text-xs text-slate-500 block mb-1">标题</label>
+          <input x-model="text.title" @input.debounce.400ms="refreshPreview()" type="text"
+            class="w-full border rounded px-3 py-2 text-sm bg-white" placeholder="2026-04-24" />
+        </div>
+        <div>
+          <label class="text-xs text-slate-500 block mb-1">正文（\n 换行）</label>
+          <textarea x-model="text.body" @input.debounce.400ms="refreshPreview()" rows="6"
+            class="w-full border rounded px-3 py-2 text-sm font-mono bg-white"
+            placeholder="14:00 项目评审\n16:00 周会"></textarea>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="text-xs text-slate-500 block mb-1">标题色</label>
+            <select x-model="text.title_color" @change="refreshPreview()" class="w-full border rounded px-2 py-2 text-sm bg-white">
+              <template x-for="c in availableColors()" :key="c"><option x-text="c" :value="c"></option></template>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs text-slate-500 block mb-1">正文色</label>
+            <select x-model="text.body_color" @change="refreshPreview()" class="w-full border rounded px-2 py-2 text-sm bg-white">
+              <template x-for="c in availableColors()" :key="c"><option x-text="c" :value="c"></option></template>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs text-slate-500 block mb-1">分隔线</label>
+            <select x-model="text.separator_color" @change="refreshPreview()" class="w-full border rounded px-2 py-2 text-sm bg-white">
+              <template x-for="c in availableColors()" :key="c"><option x-text="c" :value="c"></option></template>
+            </select>
+          </div>
+        </div>
+        <p x-show="screen === '2.13inch'" class="text-xs text-amber-600">
+          2.13 寸屏只支持黑/红墨色，黄色无法显示。
+        </p>
+        <div>
+          <label class="text-xs text-slate-500 block mb-1">对齐</label>
+          <select x-model="text.align" @change="refreshPreview()" class="w-full border rounded px-2 py-2 text-sm bg-white">
+            <option value="left">左对齐</option>
+            <option value="center">居中</option>
+          </select>
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button @click="pushText()" :disabled="busy || !text.body"
+            class="flex-1 bg-slate-900 text-white text-sm rounded px-4 py-2 disabled:opacity-50">
+            <span x-show="!busy">推送到 <span x-text="resolvedDeviceLabel()"></span></span>
+            <span x-show="busy">推送中…</span>
+          </button>
+          <button @click="refreshPreview()" :disabled="previewing"
+            class="bg-slate-100 text-sm rounded px-4 py-2 disabled:opacity-50">刷新预览</button>
+        </div>
+      </div>
+      <div class="flex flex-col items-center gap-2">
+        <div class="text-xs text-slate-500">预览（按设备显示朝向）</div>
+        <div class="bg-white border border-slate-200 rounded p-3 inline-block min-h-[200px] flex items-center justify-center">
+          <img x-show="previewUrl" :src="previewUrl" class="max-w-full" alt="preview" />
+          <span x-show="!previewUrl" class="text-slate-300 text-sm">输入内容生成预览</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Image tab -->
+    <section x-show="tab === 'image'" x-cloak class="grid md:grid-cols-2 gap-6">
+      <div class="space-y-3">
+        <label class="block border-2 border-dashed border-slate-300 rounded p-6 text-center cursor-pointer hover:border-slate-500"
+          @dragover.prevent @drop.prevent="onDrop($event)">
+          <input type="file" accept="image/*" @change="onFile($event)" class="hidden" />
+          <div class="text-sm text-slate-600">
+            <span x-show="!imageFile">点击或拖拽图片到这里</span>
+            <span x-show="imageFile" x-text="imageFile?.name"></span>
+          </div>
+        </label>
+        <div class="text-xs text-slate-400">
+          图片会按所选屏幕的尺寸自动量化。3.7 寸支持 4 色，2.13 寸支持黑/白/红。
+        </div>
+        <button @click="pushImage()" :disabled="busy || !imageFile"
+          class="w-full bg-slate-900 text-white text-sm rounded px-4 py-2 disabled:opacity-50">
+          <span x-show="!busy">推送到 <span x-text="resolvedDeviceLabel()"></span></span>
+          <span x-show="busy">推送中…</span>
+        </button>
+      </div>
+      <div class="flex flex-col items-center gap-2">
+        <div class="text-xs text-slate-500">量化预览</div>
+        <div class="bg-white border border-slate-200 rounded p-3 inline-block min-h-[200px] flex items-center justify-center">
+          <img x-show="previewUrl" :src="previewUrl" class="max-w-full" alt="preview" />
+          <span x-show="!previewUrl" class="text-slate-300 text-sm">选择图片生成预览</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Toast -->
+    <div x-show="toast" x-cloak x-transition
+      :class="toast?.kind === 'error' ? 'bg-rose-600' : 'bg-emerald-600'"
+      class="fixed bottom-6 right-6 text-white text-sm px-4 py-2 rounded shadow-lg max-w-sm">
+      <span x-text="toast?.msg"></span>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

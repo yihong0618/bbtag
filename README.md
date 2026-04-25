@@ -127,6 +127,10 @@ async def push_text():
 asyncio.run(push_image())
 ```
 
+## Web UI
+
+`examples/web_ui/` 提供一个本地 Web 界面，详见 [examples/web_ui/README.md](examples/web_ui/README.md)。
+
 ## 项目结构
 
 ```
@@ -141,12 +145,15 @@ bbtag/
 │   ├── server.py         #   REST API 服务 (FastAPI)
 │   └── cli.py            #   命令行工具
 ├── examples/                     # 示例脚本
+│   ├── web_ui/                   #   Web UI 静态资源 (index.html / app.js / styles.css)
+│   ├── run_web_ui.py             #   启动 server + 挂载 Web UI
 │   ├── push_image.py             #   推送图片示例
 │   ├── push_text.py              #   推送文字示例
 │   ├── push_codex_usage.py       #   Codex usage -> 2.13 寸
 │   ├── push_codex_usage_3.7.py   #   Codex usage -> 3.7 寸
 │   ├── push_kimi_usage.py        #   Kimi usage -> 2.13 寸
 │   ├── push_kimi_usage_3.7.py    #   Kimi usage -> 3.7 寸
-│   └── push_macos_app_usage_3.7.py # macOS app usage -> 3.7 寸
+│   ├── push_macos_app_usage_3.7.py # macOS app usage -> 3.7 寸
+│   └── push_crypto_binance_price.py # 币价 -> 2.13 寸
 └── pyproject.toml
 ```
