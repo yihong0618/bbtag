@@ -9,12 +9,10 @@ import hmac
 import io
 import time
 from contextlib import asynccontextmanager
-from pathlib import Path
 
 from fastapi import FastAPI, File, Form, HTTPException, Query, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
-from fastapi.staticfiles import StaticFiles
 from PIL import Image
 from pydantic_settings import BaseSettings
 
@@ -36,7 +34,6 @@ class Settings(BaseSettings):
     packet_interval: int = 50  # BLE 包间隔 (ms)
     host: str = "0.0.0.0"
     port: int = 8090
-    serve_web: bool = False  # 默认不挂前端 (保持原 API-only 行为); BLUETAG_SERVE_WEB=1 启用
 
     class Config:
         env_prefix = "BLUETAG_"
@@ -423,13 +420,6 @@ async def preview_endpoint(
     buf = io.BytesIO()
     preview.save(buf, format="PNG")
     return Response(content=buf.getvalue(), media_type="image/png")
-
-
-# ─── Static frontend (optional) ──────────────────────────
-
-_web_dir = Path(__file__).parent / "web"
-if settings.serve_web and _web_dir.exists():
-    app.mount("/", StaticFiles(directory=_web_dir, html=True), name="web")
 
 
 if __name__ == "__main__":

@@ -129,7 +129,7 @@ asyncio.run(push_image())
 
 ## Web UI
 
-可选的本地 Web 界面，覆盖扫描设备 / 推送文字 / 上传图片 / 预览。默认关闭，设 `BLUETAG_SERVE_WEB=1` 启用。
+`examples/web_ui/` 提供一个本地 Web 界面（纯 HTML + 原生 JS），覆盖扫描设备 / 推送文字 / 上传图片 / 预览。
 
 安装依赖：
 
@@ -141,13 +141,12 @@ uv sync --extra server
 
 ```
 BLUETAG_API_TOKEN=your-secret
-BLUETAG_SERVE_WEB=1
 ```
 
-启动服务和 Web UI：
+启动：
 
 ```bash
-uv run uvicorn bluetag.server:app --port 8090
+uv run examples/run_web_ui.py
 ```
 
 浏览器打开 <http://127.0.0.1:8090/>，token 填到右上角输入框。完整 REST 文档见 <http://127.0.0.1:8090/docs>。
@@ -163,10 +162,11 @@ bbtag/
 │   ├── ble.py            #   BLE 扫描/连接/发送 (bleak)
 │   ├── screens.py        #   屏幕配置、设备名前缀、缓存文件规则
 │   ├── transfer.py       #   2.13 寸图层发送协议
-│   ├── server.py         #   REST API 服务 (FastAPI) + Web UI 静态托管
-│   ├── web/              #   Web UI 静态资源 (index.html / app.js / styles.css)
+│   ├── server.py         #   REST API 服务 (FastAPI)
 │   └── cli.py            #   命令行工具
 ├── examples/                     # 示例脚本
+│   ├── web_ui/                   #   Web UI 静态资源 (index.html / app.js / styles.css)
+│   ├── run_web_ui.py             #   启动 server + 挂载 Web UI
 │   ├── push_image.py             #   推送图片示例
 │   ├── push_text.py              #   推送文字示例
 │   ├── push_codex_usage.py       #   Codex usage -> 2.13 寸
