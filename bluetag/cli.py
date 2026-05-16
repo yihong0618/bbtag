@@ -24,7 +24,7 @@ from bluetag.image import (
 from bluetag.protocol import build_frame, packetize, parse_mac_suffix
 from bluetag.screens import ScreenProfile, get_screen_profile
 from bluetag.text import render_text
-from bluetag.transfer import send_bicolor_image
+from bluetag.transfer import send_bicolor_image, send_bicolor_image_420r
 
 DEFAULT_SCAN_TIMEOUT = 5.0
 DEFAULT_SCAN_RETRIES = 3
@@ -174,6 +174,15 @@ async def _push_layer_image(
             f"连接 {target['name']} [{profile.name}], "
             f"黑层 {len(black_data)} bytes, 红层 {len(red_data)} bytes"
         )
+        if profile.transport == "420r":
+            return await send_bicolor_image_420r(
+                session,
+                black_data,
+                red_data,
+                delay_ms=interval_ms,
+                settle_ms=profile.settle_ms,
+                on_progress=_layer_progress,
+            )
         return await send_bicolor_image(
             session,
             black_data,
@@ -388,7 +397,7 @@ def main():
     )
     sub = parser.add_subparsers(dest="command")
 
-    screen_help = "屏幕尺寸: 3.7inch/3.7 或 2.13inch/2.13 (默认 3.7inch)"
+    screen_help = "屏幕尺寸: 3.7inch / 2.13inch / 4.2inch (默认 3.7inch)"
 
     scan_p = sub.add_parser("scan", help="扫描附近的蓝签设备")
     scan_p.add_argument(

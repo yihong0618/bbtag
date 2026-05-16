@@ -216,3 +216,7 @@ marimo/_lsp/
 __marimo__/
 *.png
 .device
+
+# Local debugging artifacts
+captures/
+probe_*.py
