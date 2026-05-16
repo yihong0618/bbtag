@@ -22,7 +22,7 @@ from bluetag.image import (
     unpack_2bpp,
 )
 from bluetag.protocol import build_frame, packetize, parse_mac_suffix
-from bluetag.screens import ScreenProfile, get_screen_profile
+from bluetag.screens import SCREEN_PROFILES, ScreenProfile, get_screen_profile
 from bluetag.text import render_text
 from bluetag.transfer import send_bicolor_image, send_bicolor_image_420r
 
@@ -36,12 +36,35 @@ def _default_text_title() -> str:
     return f"{date.today():%Y-%m-%d}"
 
 
-def _resolve_profile(screen: str) -> ScreenProfile:
+def _resolve_profile(screen: str | None) -> ScreenProfile:
+    if screen is None:
+        return _auto_select_profile()
     try:
         return get_screen_profile(screen)
     except ValueError as exc:
         print(f"❌ {exc}", file=sys.stderr)
         raise SystemExit(2) from exc
+
+
+def _auto_select_profile() -> ScreenProfile:
+    cached = [p for p in SCREEN_PROFILES.values() if p.cache_path.exists()]
+    if not cached:
+        return SCREEN_PROFILES[DEFAULT_SCREEN]
+    if len(cached) == 1:
+        profile = cached[0]
+        print(f"使用缓存设备屏幕: {profile.name}")
+        return profile
+
+    print("检测到多个已配对屏幕，请选择:")
+    for idx, profile in enumerate(cached, 1):
+        print(f"  {idx}) {profile.name}")
+    while True:
+        choice = input("› ").strip()
+        if choice.isdigit():
+            n = int(choice)
+            if 1 <= n <= len(cached):
+                return cached[n - 1]
+        print("无效选择，请重试")
 
 
 def _save_device(device: dict, profile: ScreenProfile):
@@ -397,19 +420,22 @@ def main():
     )
     sub = parser.add_subparsers(dest="command")
 
-    screen_help = "屏幕尺寸: 3.7inch / 2.13inch / 4.2inch (默认 3.7inch)"
+    screen_help = (
+        "屏幕尺寸: 3.7inch / 2.13inch / 4.2inch "
+        "(默认根据已缓存设备自动选择，无缓存时回落到 3.7inch)"
+    )
 
     scan_p = sub.add_parser("scan", help="扫描附近的蓝签设备")
     scan_p.add_argument(
         "--timeout", "-t", type=float, default=5.0, help="扫描超时 (秒)"
     )
-    scan_p.add_argument("--screen", default=DEFAULT_SCREEN, help=screen_help)
+    scan_p.add_argument("--screen", default=None, help=screen_help)
 
     push_p = sub.add_parser("push", help="推送图片到设备")
     push_p.add_argument("image", help="图片文件路径")
     push_p.add_argument("--device", "-d", help="设备名")
     push_p.add_argument("--address", "-a", help="设备 BLE 地址")
-    push_p.add_argument("--screen", default=DEFAULT_SCREEN, help=screen_help)
+    push_p.add_argument("--screen", default=None, help=screen_help)
     push_p.add_argument(
         "--interval", "-i", type=int, help="包间隔 (ms，默认按屏幕选择)"
     )
@@ -450,7 +476,7 @@ def main():
     )
     text_p.add_argument("--device", "-d", help="设备名")
     text_p.add_argument("--address", "-a", help="设备 BLE 地址")
-    text_p.add_argument("--screen", default=DEFAULT_SCREEN, help=screen_help)
+    text_p.add_argument("--screen", default=None, help=screen_help)
     text_p.add_argument(
         "--interval", "-i", type=int, help="包间隔 (ms，默认按屏幕选择)"
     )
