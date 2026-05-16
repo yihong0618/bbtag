@@ -14,14 +14,15 @@ START_PACKET = bytes([0x00, 0x00, 0x00, 0x00])
 END_PACKET = bytes([0xFF, 0xFF, 0xFF, 0xFF])
 
 # 420R-specific framing — captured from official Android app.
-# The wire protocol uses 180-byte data payloads, but on macOS the BLE ATT MTU
-# tops out at 185 bytes; a 185-byte packet (1+2+1+180+1) triggers prepared
-# writes and overflows the device queue. 177 keeps the full packet at 182
-# bytes (= ATT_MTU - 3) so it ships in one write. On Linux/Android (ATT MTU
-# 247+) you can raise this to 180 to match the official app byte-for-byte.
+# The wire protocol uses 180-byte data payloads, but on macOS payloads close
+# to the negotiated ATT MTU (185) drop packets intermittently, showing up as
+# stray rows of inverted pixels. 120 stays comfortably below the MTU and
+# transmits cleanly; the device honors the per-packet `len` field so the
+# image renders correctly. On Linux/Android (ATT MTU 247+) this can be
+# raised back to 180 to match the official app byte-for-byte.
 R420_BLACK_TYPE = 0x13
 R420_RED_TYPE = 0x12
-R420_PAYLOAD_SIZE = 177
+R420_PAYLOAD_SIZE = 120
 R420_SESSION_OPEN = bytes([0x60, 0x00, 0x01, 0x00, 0x61])
 R420_SESSION_COMMIT = bytes([0x50, 0x00, 0x01, 0x01])
 
