@@ -144,6 +144,7 @@ def _build_layer_preview_and_payload(
         mirror=profile.mirror,
         swap_wh=profile.swap_wh,
         detect_red=profile.detect_red,
+        fit=profile.fit,
     )
     black_data = layer_to_bytes(black_layer, profile.encoding)
     red_data = layer_to_bytes(red_layer, profile.encoding)

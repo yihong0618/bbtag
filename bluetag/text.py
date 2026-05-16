@@ -83,10 +83,10 @@ def _calc_text_height(
     return total
 
 
-def _layout_metrics(width: int, height: int) -> dict[str, int]:
+def _layout_metrics(width: int, height: int, top_safe_px: int = 0) -> dict[str, int]:
     return {
         "padding_x": max(10, width // 17),
-        "padding_y": max(8, height // 26),
+        "padding_y": max(8, height // 26) + top_safe_px,
         "line_spacing": max(3, height // 70),
         "title_body_gap": max(8, height // 22),
         "separator_height": max(1, height // 138),
@@ -117,7 +117,7 @@ def render_text(
     """
     profile = get_screen_profile(screen)
     width, height = profile.size
-    metrics = _layout_metrics(width, height)
+    metrics = _layout_metrics(width, height, top_safe_px=profile.top_safe_px)
 
     bg_rgb = COLOR_MAP.get(bg_color, COLOR_WHITE)
     title_rgb = COLOR_MAP.get(title_color, COLOR_RED)
@@ -145,10 +145,9 @@ def render_text(
         for line in title_lines:
             bbox = draw.textbbox((0, 0), line, font=title_font)
             line_w = bbox[2] - bbox[0]
-            line_h = bbox[3] - bbox[1]
             x = metrics["padding_x"] + (usable_w - line_w) // 2
             draw.text((x, y_cursor), line, fill=title_rgb, font=title_font)
-            y_cursor += line_h + metrics["line_spacing"]
+            y_cursor += bbox[3] + metrics["line_spacing"]
 
         y_cursor += metrics["title_body_gap"] // 2
         sep_y = y_cursor

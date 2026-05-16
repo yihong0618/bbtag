@@ -25,6 +25,8 @@ class ScreenProfile:
     flush_every: int = 0
     settle_ms: int = 0
     encoding: str = "row"
+    fit: str = "contain"
+    top_safe_px: int = 0
 
     @property
     def size(self) -> tuple[int, int]:
@@ -80,6 +82,8 @@ SCREEN_PROFILES: dict[str, ScreenProfile] = {
         flush_every=0,
         settle_ms=2000,
         encoding="row",
+        fit="cover",
+        top_safe_px=8,
     ),
 }
 
