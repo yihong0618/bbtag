@@ -13,6 +13,19 @@ LAYER_PAYLOAD_SIZE = 16
 START_PACKET = bytes([0x00, 0x00, 0x00, 0x00])
 END_PACKET = bytes([0xFF, 0xFF, 0xFF, 0xFF])
 
+# 420R-specific framing — captured from official Android app.
+# The wire protocol uses 180-byte data payloads, but on macOS payloads close
+# to the negotiated ATT MTU (185) drop packets intermittently, showing up as
+# stray rows of inverted pixels. 120 stays comfortably below the MTU and
+# transmits cleanly; the device honors the per-packet `len` field so the
+# image renders correctly. On Linux/Android (ATT MTU 247+) this can be
+# raised back to 180 to match the official app byte-for-byte.
+R420_BLACK_TYPE = 0x13
+R420_RED_TYPE = 0x12
+R420_PAYLOAD_SIZE = 120
+R420_SESSION_OPEN = bytes([0x60, 0x00, 0x01, 0x00, 0x61])
+R420_SESSION_COMMIT = bytes([0x50, 0x00, 0x01, 0x01])
+
 ProgressCallback = Callable[[str, int, int], None]
 
 
@@ -104,6 +117,101 @@ async def send_bicolor_image(
         flush_every=flush_every,
         on_progress=on_progress,
     ):
+        return False
+
+    if settle_ms > 0:
+        await asyncio.sleep(settle_ms / 1000.0)
+
+    return True
+
+
+async def _send_layer_420r(
+    session: BleSession,
+    data: bytes,
+    *,
+    layer_type: int,
+    layer_name: str,
+    delay_ms: int,
+    on_progress: ProgressCallback | None,
+) -> bool:
+    try:
+        await session.write(bytes([layer_type]) + START_PACKET, response=True)
+        await asyncio.sleep(delay_ms / 1000.0)
+
+        total_packets = (len(data) + R420_PAYLOAD_SIZE - 1) // R420_PAYLOAD_SIZE
+        packet_index = 1
+        offset = 0
+        while offset < len(data):
+            chunk = data[offset : offset + R420_PAYLOAD_SIZE]
+            checksum = sum(chunk) & 0xFF
+            packet = (
+                bytes([layer_type])
+                + packet_index.to_bytes(2, "big")
+                + bytes([len(chunk)])
+                + chunk
+                + bytes([checksum])
+            )
+            await session.write(packet, response=True)
+            offset += len(chunk)
+            if on_progress:
+                on_progress(layer_name, packet_index, total_packets)
+            packet_index += 1
+
+        await session.write(bytes([layer_type]) + END_PACKET, response=True)
+        await asyncio.sleep(delay_ms / 1000.0)
+        return True
+    except Exception as exc:
+        print(f"\n❌ {layer_name}发送失败: {exc}")
+        return False
+
+
+async def send_bicolor_image_420r(
+    session: BleSession,
+    black_data: bytes,
+    red_data: bytes,
+    *,
+    delay_ms: int,
+    settle_ms: int,
+    on_progress: ProgressCallback | None = None,
+) -> bool:
+    """Send black and red layers using the 420R framing.
+
+    Uses write-with-response (ATT opcode 0x12) so the BLE stack waits for the
+    device ACK before sending the next packet, matching the official app.
+    """
+    try:
+        await session.write(R420_SESSION_OPEN, response=True)
+        await asyncio.sleep(0.4)
+    except Exception as exc:
+        print(f"\n❌ 会话握手失败: {exc}")
+        return False
+
+    if not await _send_layer_420r(
+        session,
+        black_data,
+        layer_type=R420_BLACK_TYPE,
+        layer_name="黑层",
+        delay_ms=delay_ms,
+        on_progress=on_progress,
+    ):
+        return False
+
+    await asyncio.sleep(0.2)
+
+    if not await _send_layer_420r(
+        session,
+        red_data,
+        layer_type=R420_RED_TYPE,
+        layer_name="红层",
+        delay_ms=delay_ms,
+        on_progress=on_progress,
+    ):
+        return False
+
+    try:
+        await session.write(R420_SESSION_COMMIT, response=True)
+    except Exception as exc:
+        print(f"\n❌ 收尾包发送失败: {exc}")
         return False
 
     if settle_ms > 0:

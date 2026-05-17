@@ -137,6 +137,7 @@ def process_bicolor_image(
     mirror: bool = True,
     swap_wh: bool = False,
     detect_red: bool = True,
+    fit: str = "contain",
 ) -> tuple[np.ndarray, np.ndarray, Image.Image]:
     """
     将图像处理为双色电子墨水屏的黑层/红层。
@@ -154,7 +155,12 @@ def process_bicolor_image(
     if rotate:
         img = img.rotate(rotate, expand=True)
 
-    img.thumbnail((width, height), Image.Resampling.LANCZOS)
+    if fit == "cover":
+        scale = max(width / img.width, height / img.height)
+        new_size = (max(1, round(img.width * scale)), max(1, round(img.height * scale)))
+        img = img.resize(new_size, Image.Resampling.LANCZOS)
+    else:
+        img.thumbnail((width, height), Image.Resampling.LANCZOS)
     if mirror:
         img = img.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
 
